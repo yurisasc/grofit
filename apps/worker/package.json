@@ -1,0 +1,21 @@
+{
+  "name": "@grofit/worker",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/index.js",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "bullmq": "^5.17.0",
+    "dotenv": "^16.4.5",
+    "ioredis": "^5.3.2"
+  },
+  "devDependencies": {
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.4.5",
+    "@types/node": "^20.12.12"
+  }
+}

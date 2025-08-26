@@ -1,0 +1,46 @@
+{
+  "name": "grofit",
+  "private": true,
+  "version": "0.1.0",
+  "packageManager": "pnpm@8.15.6",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "turbo build",
+    "dev": "turbo run dev --concurrency=20",
+    "lint": "turbo run lint && eslint \"packages/**/*.{ts,tsx,js,jsx}\" \"apps/api/**/*.{ts,tsx,js,jsx}\" \"apps/worker/**/*.{ts,tsx,js,jsx}\" \"apps/web/**/*.{ts,tsx,js,jsx}\" --max-warnings=0",
+    "lint:fix": "eslint \"packages/**/*.{ts,tsx,js,jsx}\" \"apps/api/**/*.{ts,tsx,js,jsx}\" \"apps/worker/**/*.{ts,tsx,js,jsx}\" \"apps/web/**/*.{ts,tsx,js,jsx}\" --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "turbo run test",
+    "typecheck": "turbo run typecheck",
+    "commitlint": "commitlint",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.12",
+    "@types/pg": "^8.15.5",
+    "@commitlint/cli": "^19.4.0",
+    "@commitlint/config-conventional": "^19.4.0",
+    "@typescript-eslint/eslint-plugin": "^7.15.0",
+    "@typescript-eslint/parser": "^7.15.0",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.5",
+    "prettier": "^3.3.2",
+    "turbo": "^1.12.3",
+    "typescript": "^5.4.5"
+  },
+  "lint-staged": {
+    "**/*.{ts,tsx,js,jsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "**/*.{md,json,yml,yaml,css,scss}": [
+      "prettier --write"
+    ]
+  }
+}
