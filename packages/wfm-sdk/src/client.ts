@@ -38,8 +38,10 @@ export class WarframeMarketAPI {
       auth_type: 'header',
       platform: this._config.platform,
       language: this._config.language,
-      Authorization: `JWT ${this._config.jwtToken}`,
       'User-Agent': this._config.userAgent,
+    }
+    if (this._config.jwtToken) {
+      this._headers.Authorization = `JWT ${this._config.jwtToken}`
     }
 
     this.items = new Items(this)
@@ -53,8 +55,13 @@ export class WarframeMarketAPI {
    */
   public setToken(token: string): void {
     this._config.jwtToken = token
-    this._headers.Authorization = `JWT ${token}`
-    this._debug('Client:SetToken', 'JWT has been updated.')
+    if (token) {
+      this._headers.Authorization = `JWT ${token}`
+      this._debug('Client:SetToken', 'JWT has been updated.')
+    } else {
+      delete this._headers.Authorization
+      this._debug('Client:SetToken', 'JWT has been cleared.')
+    }
   }
 
   /**
