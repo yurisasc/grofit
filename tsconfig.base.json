@@ -17,6 +17,7 @@
       "@grofit/orders": ["packages/orders/src/index.ts"],
       "@grofit/notifier": ["packages/notifier/src/index.ts"],
       "@grofit/log-watcher": ["packages/log-watcher/src/index.ts"],
+      "@grofit/logger": ["packages/logger/src/index.ts"],
       "@grofit/scheduler": ["packages/scheduler/src/index.ts"],
       "@grofit/plugin-api": ["packages/plugin-api/src/index.ts"],
       "@grofit/ui": ["packages/ui/src/index.tsx"],
