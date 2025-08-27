@@ -3,9 +3,14 @@
   "private": true,
   "version": "0.1.0",
   "packageManager": "pnpm@8.15.6",
+  "engines": {
+    "node": ">=20.18.0 <21",
+    "pnpm": ">=8.15.6"
+  },
   "workspaces": [
     "apps/*",
-    "packages/*"
+    "packages/*",
+    "packages/plugins/*"
   ],
   "scripts": {
     "build": "turbo build",
@@ -17,7 +22,8 @@
     "test": "turbo run test",
     "typecheck": "turbo run typecheck",
     "commitlint": "commitlint",
-    "prepare": "husky"
+    "prepare": "husky",
+    "plugins:codegen": "node scripts/generate-plugin-registry.mjs"
   },
   "devDependencies": {
     "@types/node": "^20.12.12",

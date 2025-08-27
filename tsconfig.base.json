@@ -18,7 +18,7 @@
       "@grofit/notifier": ["packages/notifier/src/index.ts"],
       "@grofit/log-watcher": ["packages/log-watcher/src/index.ts"],
       "@grofit/scheduler": ["packages/scheduler/src/index.ts"],
-      "@grofit/plugins": ["packages/plugins/src/index.ts"],
+      "@grofit/plugin-api": ["packages/plugin-api/src/index.ts"],
       "@grofit/ui": ["packages/ui/src/index.tsx"],
       "@grofit/utils": ["packages/utils/src/index.ts"]
     }

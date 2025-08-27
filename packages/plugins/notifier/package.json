@@ -1,0 +1,70 @@
+{
+  "name": "@grofit/notifier-plugin",
+  "private": true,
+  "version": "0.1.0",
+  "packageManager": "pnpm@8.15.6",
+  "engines": {
+    "node": ">=20.18.0 <21",
+    "pnpm": ">=8.15.6"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "keywords": [
+    "grofit-plugin"
+  ],
+  "grofitPlugin": {
+    "id": "notifier",
+    "compatibleApi": ">=0.1.0 <1.0.0",
+    "permissions": [
+      "notifier.send"
+    ],
+    "entry": "./src/plugin.ts",
+    "commands": [
+      "./src/commands/sendTest.ts"
+    ],
+    "ui": {
+      "widgets": [
+        {
+          "name": "NotificationSettings",
+          "entry": "./src/ui/NotificationSettings.tsx"
+        }
+      ]
+    },
+    "configSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "channels": {
+          "type": "object",
+          "properties": {
+            "desktop": {
+              "type": "boolean",
+              "default": true
+            },
+            "discordWebhookUrl": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        "muted": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsc -w -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.2"
+  },
+  "dependencies": {
+    "@grofit/plugin-api": "workspace:*",
+    "@grofit/ui": "workspace:*"
+  }
+}
