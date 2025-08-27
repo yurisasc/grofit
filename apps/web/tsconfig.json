@@ -5,6 +5,7 @@
     "allowJs": true,
     "noEmit": true,
     "incremental": true,
+    "moduleResolution": "Bundler",
     "isolatedModules": true,
     "plugins": [
       {
