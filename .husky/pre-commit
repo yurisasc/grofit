@@ -1,4 +1,10 @@
 #!/usr/bin/env sh
 
 # Run linters and formatters on staged files
+set -e
+
+# Run TypeScript typecheck across the workspace (scoped by Turbo to affected packages)
+pnpm typecheck
+
+# Run linters and formatters on staged files
 pnpm lint-staged
