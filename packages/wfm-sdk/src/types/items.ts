@@ -19,6 +19,7 @@ export interface ItemResponse {
 /** Each entry in items_in_set. */
 export interface ItemInSet {
   mod_max_rank: number
+  vaulted?: boolean
   id: string
   trading_tax: number
   thumb: string
