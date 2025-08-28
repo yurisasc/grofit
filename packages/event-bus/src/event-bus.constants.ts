@@ -1,0 +1,2 @@
+export const PUB_CLIENT = 'EVENT_BUS_PUB_CLIENT'
+export const SUB_CLIENT = 'EVENT_BUS_SUB_CLIENT'
