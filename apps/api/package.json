@@ -22,6 +22,7 @@
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2",
     "@grofit/logger": "workspace:*",
+    "@grofit/contracts": "workspace:*",
     "bullmq": "^5.58.2",
     "ioredis": "^5.7.0"
   },

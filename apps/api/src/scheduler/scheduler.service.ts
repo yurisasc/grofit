@@ -1,7 +1,11 @@
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common'
 import { Queue } from 'bullmq'
 import logger from '@grofit/logger'
-import { INGESTION_QUEUE } from '../queues/queues.constants'
+import {
+  INGESTION_QUEUE,
+  REFRESH_LIVE_ORDERS_JOB,
+  INGEST_RELICS_HISTORY_JOB,
+} from '@grofit/contracts'
 
 @Injectable()
 export class SchedulerService implements OnModuleInit {
@@ -15,32 +19,33 @@ export class SchedulerService implements OnModuleInit {
 
   private async scheduleLiveOrderRefresh() {
     const platform = process.env.WFM_PLATFORM || 'pc'
-    const refreshMinutes = Number.parseInt(process.env.LIVE_REFRESH_INTERVAL_MINUTES || '2', 10)
-    const everyMs = Math.max(1, refreshMinutes) * 60 * 1000
+    const everyMs =
+      Number.parseInt(process.env.LIVE_REFRESH_INTERVAL_MINUTES || '2', 10) * 60 * 1000
+    const jobId = `${REFRESH_LIVE_ORDERS_JOB}:${platform}`
 
-    await this.ingestionQueue.add(
-      'refresh:live-orders',
-      { platform },
+    await this.ingestionQueue.upsertJobScheduler(
+      jobId,
+      { every: everyMs },
       {
-        repeat: { every: everyMs },
-        jobId: `refresh:live-orders:${platform}`,
+        name: REFRESH_LIVE_ORDERS_JOB,
+        data: { platform },
       },
     )
     logger.info(
-      { job: 'refresh:live-orders', every: `${refreshMinutes}m`, platform },
+      { job: REFRESH_LIVE_ORDERS_JOB, every: `${everyMs / 1000}s`, platform },
       '[Scheduler] Scheduled job.',
     )
   }
 
   private async scheduleRelicsHistoryIngestion() {
     await this.ingestionQueue.add(
-      'ingest:relics-history',
+      INGEST_RELICS_HISTORY_JOB,
       {},
       {
         repeat: { pattern: '0 5 * * *', tz: 'UTC' },
-        jobId: 'ingest:relics-history:daily',
+        jobId: `${INGEST_RELICS_HISTORY_JOB}:daily`,
       },
     )
-    logger.info({ job: 'ingest:relics-history', cron: '0 5 * * *' }, '[Scheduler] Scheduled job.')
+    logger.info({ job: INGEST_RELICS_HISTORY_JOB, cron: '0 5 * * *' }, '[Scheduler] Scheduled job.')
   }
 }

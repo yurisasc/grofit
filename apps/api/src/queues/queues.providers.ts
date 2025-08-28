@@ -1,7 +1,7 @@
 import { Provider } from '@nestjs/common'
 import { Queue } from 'bullmq'
 import logger from '@grofit/logger'
-import { INGESTION_QUEUE } from './queues.constants'
+import { INGESTION_QUEUE } from '@grofit/contracts'
 
 const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379'
 
