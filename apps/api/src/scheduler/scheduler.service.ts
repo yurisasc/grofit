@@ -4,7 +4,7 @@ import logger from '@grofit/logger'
 import {
   INGESTION_QUEUE,
   REFRESH_LIVE_ORDERS_JOB,
-  INGEST_RELICS_HISTORY_JOB,
+  INGEST_PRICE_HISTORY_JOB,
 } from '@grofit/contracts'
 
 @Injectable()
@@ -13,10 +13,42 @@ export class SchedulerService implements OnModuleInit {
 
   async onModuleInit() {
     logger.info('[Scheduler] Initializing repeatable jobs...')
+    await this.schedulePriceHistoryIngestion()
     await this.scheduleLiveOrderRefresh()
-    await this.scheduleRelicsHistoryIngestion()
   }
 
+  /**
+   * Schedules a job to fetch extensive price history data.
+   * The data fetched is used to determine which items are popular,
+   * based on the volume, spread, etc.
+   *
+   * With the popular items list, we can show the items that are most
+   * likely to be profitable to trade, but this data will
+   * still need to be supplemented by the live orders data for
+   * accurate pricing signals.
+   */
+  private async schedulePriceHistoryIngestion() {
+    await this.ingestionQueue.add(
+      INGEST_PRICE_HISTORY_JOB,
+      {},
+      {
+        repeat: { pattern: '0 5 * * *', tz: 'UTC' },
+        jobId: `${INGEST_PRICE_HISTORY_JOB}:daily`,
+      },
+    )
+    logger.info({ job: INGEST_PRICE_HISTORY_JOB, cron: '0 5 * * *' }, '[Scheduler] Scheduled job.')
+  }
+
+  /**
+   * Schedules a job to fetch current buy/sell orders for items
+   * in the popular items list or in the watchlist.
+   *
+   * The watchlist contains items defined in the `WATCHLIST_SLUGS`
+   * environment variable and the user's active buy/sell orders.
+   *
+   * With the live orders data, we can always get the best buy/sell
+   * prices and the spread of the items watched.
+   */
   private async scheduleLiveOrderRefresh() {
     const platform = process.env.WFM_PLATFORM || 'pc'
     const everyMs =
@@ -35,17 +67,5 @@ export class SchedulerService implements OnModuleInit {
       { job: REFRESH_LIVE_ORDERS_JOB, every: `${everyMs / 1000}s`, platform },
       '[Scheduler] Scheduled job.',
     )
-  }
-
-  private async scheduleRelicsHistoryIngestion() {
-    await this.ingestionQueue.add(
-      INGEST_RELICS_HISTORY_JOB,
-      {},
-      {
-        repeat: { pattern: '0 5 * * *', tz: 'UTC' },
-        jobId: `${INGEST_RELICS_HISTORY_JOB}:daily`,
-      },
-    )
-    logger.info({ job: INGEST_RELICS_HISTORY_JOB, cron: '0 5 * * *' }, '[Scheduler] Scheduled job.')
   }
 }
