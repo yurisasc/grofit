@@ -1,7 +1,8 @@
+import { OrderSide } from '@grofit/contracts'
 import type { ItemInSet } from './items'
 import type { UserInfo } from './common'
 
-export type OrderType = 'buy' | 'sell'
+export type OrderType = OrderSide
 
 /** Common order details returned by the API. */
 export interface OrderDetails {
@@ -9,7 +10,7 @@ export interface OrderDetails {
   platinum: number
   quantity: number
   visible: boolean
-  order_type: OrderType
+  order_type: OrderSide
   platform: string
   region: string
   creation_date: string

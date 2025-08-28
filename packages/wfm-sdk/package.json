@@ -16,8 +16,8 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@grofit/core": "workspace:*",
-    "@grofit/logger": "workspace:*"
+    "@grofit/logger": "workspace:*",
+    "@grofit/contracts": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.9.2"
