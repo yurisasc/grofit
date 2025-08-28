@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
     "target": "ES2020",
-    "module": "ESNext",
     "lib": ["ES2020", "DOM"],
     "types": ["vitest/globals"],
     "moduleResolution": "Node",
