@@ -10,7 +10,6 @@
     "typecheck": "tsc -p tsconfig.json"
   },
   "dependencies": {
-    "dotenv": "^17.2.1",
     "ioredis": "^5.7.0",
     "@grofit/logger": "workspace:*",
     "@nestjs/common": "^11.1.6",

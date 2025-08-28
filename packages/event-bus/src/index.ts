@@ -1,6 +1,3 @@
-import 'dotenv/config'
-import 'reflect-metadata'
-
 export * from './event-bus.module'
 export * from './event-bus.service'
 export * from './event-bus.constants'
