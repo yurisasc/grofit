@@ -10,6 +10,7 @@
     "strict": true,
     "baseUrl": ".",
     "paths": {
+      "@grofit/contracts": ["packages/contracts/src/index.ts"],
       "@grofit/core": ["packages/core/src/index.ts"],
       "@grofit/db": ["packages/db/src/index.ts"],
       "@grofit/event-bus": ["packages/event-bus/src/index.ts"],
