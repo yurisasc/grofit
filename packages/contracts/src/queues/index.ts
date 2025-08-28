@@ -1,1 +1,1 @@
-export const INGESTION_QUEUE = 'ingestion'
+export const MARKET_DATA_QUEUE = 'market-data'

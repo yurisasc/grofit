@@ -1,15 +1,15 @@
 import { Provider } from '@nestjs/common'
 import { Queue } from 'bullmq'
 import logger from '@grofit/logger'
-import { INGESTION_QUEUE } from '@grofit/contracts'
+import { MARKET_DATA_QUEUE } from '@grofit/contracts'
 
 const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379'
 
 export const queuesProviders: Provider[] = [
   {
-    provide: INGESTION_QUEUE,
+    provide: MARKET_DATA_QUEUE,
     useFactory: () => {
-      const queue = new Queue(INGESTION_QUEUE, {
+      const queue = new Queue(MARKET_DATA_QUEUE, {
         connection: { url: redisUrl, connectTimeout: 30000, commandTimeout: 30000 },
         defaultJobOptions: {
           attempts: 3,
@@ -19,7 +19,7 @@ export const queuesProviders: Provider[] = [
           },
         },
       })
-      logger.info({ queue: INGESTION_QUEUE }, '[Queues] BullMQ queue initialized.')
+      logger.info({ queue: MARKET_DATA_QUEUE }, '[Queues] BullMQ queue initialized.')
       return queue
     },
   },

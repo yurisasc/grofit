@@ -2,14 +2,14 @@ import { Inject, Injectable, OnModuleInit } from '@nestjs/common'
 import { Queue } from 'bullmq'
 import logger from '@grofit/logger'
 import {
-  INGESTION_QUEUE,
+  MARKET_DATA_QUEUE,
   REFRESH_LIVE_ORDERS_JOB,
   INGEST_PRICE_HISTORY_JOB,
 } from '@grofit/contracts'
 
 @Injectable()
 export class SchedulerService implements OnModuleInit {
-  constructor(@Inject(INGESTION_QUEUE) private readonly ingestionQueue: Queue) {}
+  constructor(@Inject(MARKET_DATA_QUEUE) private readonly marketDataQueue: Queue) {}
 
   async onModuleInit() {
     logger.info('[Scheduler] Initializing repeatable jobs...')
@@ -28,7 +28,7 @@ export class SchedulerService implements OnModuleInit {
    * accurate pricing signals.
    */
   private async schedulePriceHistoryIngestion() {
-    await this.ingestionQueue.add(
+    await this.marketDataQueue.add(
       INGEST_PRICE_HISTORY_JOB,
       {},
       {
@@ -55,7 +55,7 @@ export class SchedulerService implements OnModuleInit {
       Number.parseInt(process.env.LIVE_REFRESH_INTERVAL_MINUTES || '2', 10) * 60 * 1000
     const jobId = `${REFRESH_LIVE_ORDERS_JOB}:${platform}`
 
-    await this.ingestionQueue.upsertJobScheduler(
+    await this.marketDataQueue.upsertJobScheduler(
       jobId,
       { every: everyMs },
       {
