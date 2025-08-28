@@ -2,8 +2,8 @@
  * Configuration for the Warframe Market API client.
  */
 export interface ApiConfig {
-  ingameName: string
-  jwtToken: string
+  ingameName?: string
+  jwtToken?: string
   platform?: 'pc' | 'ps4' | 'xb1' | 'swi'
   language?: string
   userAgent?: string

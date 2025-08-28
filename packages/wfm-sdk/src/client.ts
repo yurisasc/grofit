@@ -25,10 +25,12 @@ export class WarframeMarketAPI {
 
   constructor(config: ApiConfig) {
     this._config = {
-      platform: 'pc',
-      language: 'en',
+      ingameName: '',
+      jwtToken: '',
+      platform: config.platform || 'pc',
+      language: config.language || 'en',
       userAgent: 'WFM API Client/0.1.0',
-      minRequestInterval: 1000, // 1 request per second
+      minRequestInterval: 1000,
       ...config,
     }
 
@@ -47,6 +49,15 @@ export class WarframeMarketAPI {
     this.items = new Items(this)
     this.orders = new Orders(this)
     this.auth = new Auth(this)
+  }
+
+  /**
+   * Update the in-game name for the client instance.
+   * @param name The new in-game name.
+   */
+  public setIngameName(name: string): void {
+    this._config.ingameName = name
+    this._debug('Client:SetIngameName', 'In-game name has been updated.')
   }
 
   /**
@@ -71,7 +82,7 @@ export class WarframeMarketAPI {
     const now = Date.now()
     const timeSinceLastRequest = now - this._lastRequestTime
 
-    if (timeSinceLastRequest < this._config.minRequestInterval) {
+    if (this._config.minRequestInterval && timeSinceLastRequest < this._config.minRequestInterval) {
       const delay = this._config.minRequestInterval - timeSinceLastRequest
       await new Promise((resolve) => setTimeout(resolve, delay))
     }

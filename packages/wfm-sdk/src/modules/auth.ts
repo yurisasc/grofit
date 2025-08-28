@@ -31,10 +31,10 @@ export class Auth {
       throw new Error('Could not extract in-game name from response.')
     }
 
-    this.client._debug('Auth:Login', `Successfully logged in as ${ingameName}.`)
+    this.client.setIngameName(ingameName)
+    this.client.setToken(jwtToken)
 
-    // Note: The client itself is not automatically updated with the new token.
-    // The consumer should create a new client instance with the returned credentials.
+    this.client._debug('Auth:Login', `Successfully logged in as ${ingameName}. Client updated.`)
     return { ingameName, jwtToken }
   }
 }
