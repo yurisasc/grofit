@@ -12,12 +12,14 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "dev": "tsc -w -p tsconfig.json",
-    "typecheck": "tsc -p tsconfig.json"
+    "typecheck": "tsc -p tsconfig.json",
+    "db:push": "drizzle-kit push"
   },
   "dependencies": {
     "drizzle-orm": "^0.44.5",
     "pg": "^8.16.3",
-    "dotenv": "^17.2.1"
+    "dotenv": "^17.2.1",
+    "@grofit/contracts": "workspace:*"
   },
   "devDependencies": {
     "drizzle-kit": "^0.31.4",
