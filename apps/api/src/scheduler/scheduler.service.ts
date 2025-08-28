@@ -64,7 +64,7 @@ export class SchedulerService implements OnModuleInit {
       },
     )
     logger.info(
-      { job: REFRESH_LIVE_ORDERS_JOB, every: `${everyMs / 1000}s`, platform },
+      { job: REFRESH_LIVE_ORDERS_JOB, every: `${everyMs / 60 / 1000}m`, platform },
       '[Scheduler] Scheduled job.',
     )
   }
