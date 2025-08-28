@@ -2,10 +2,13 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "outDir": "dist",
+    "rootDir": "src",
     "types": ["node"],
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "declaration": true
+    "module": "CommonJS",
+    "declaration": true,
+    "paths": {}
   },
   "include": ["src"]
 }
