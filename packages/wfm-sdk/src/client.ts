@@ -30,7 +30,7 @@ export class WarframeMarketAPI {
       platform: config.platform || 'pc',
       language: config.language || 'en',
       userAgent: 'WFM API Client/0.1.0',
-      minRequestInterval: 1000,
+      minRequestInterval: 334, // ~3 requests per second
       ...config,
     }
 
