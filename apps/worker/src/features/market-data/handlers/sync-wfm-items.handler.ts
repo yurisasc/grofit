@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { WarframeMarketAPI } from '@grofit/wfm-sdk'
+import { WfmApiService } from '../../../services/wfm/wfm.service'
 import logger from '@grofit/logger'
 import { db, schema } from '@grofit/db'
 import { eq } from 'drizzle-orm'
@@ -8,10 +9,14 @@ import { ITEMS_UPSERTED_EVENT } from '@grofit/contracts'
 
 @Injectable()
 export class SyncWfmItemsHandler {
+  private wfm: WarframeMarketAPI
+
   constructor(
-    private readonly wfm: WarframeMarketAPI,
+    private readonly wfmService: WfmApiService,
     private readonly eventBus: EventBusService,
-  ) {}
+  ) {
+    this.wfm = this.wfmService.getInstance()
+  }
 
   async handle() {
     const log = logger.child({ handler: 'SyncWfmItemsHandler' })
