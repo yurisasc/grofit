@@ -6,7 +6,7 @@ export class Orders {
 
   /** Get all orders for a specific user. */
   async getUserOrders(ingameName: string): Promise<UserOrdersPayload> {
-    const response = await this.client._makeRequest('GET', `/profile/${ingameName}/orders`)
+    const response = await this.client._makeRequest('GET', `/v1/profile/${ingameName}/orders`)
     const data = await response.json()
     return data.payload
   }
@@ -29,7 +29,7 @@ export class Orders {
     visible: boolean
     mod_rank?: number
   }): Promise<OrderDetails> {
-    const response = await this.client._makeRequest('POST', '/profile/orders', {
+    const response = await this.client._makeRequest('POST', '/v1/profile/orders', {
       body: JSON.stringify(payload),
     })
     const data = await response.json()
@@ -38,7 +38,7 @@ export class Orders {
 
   /** Delete an existing order. */
   async delete(orderId: string): Promise<any> {
-    const response = await this.client._makeRequest('DELETE', `/profile/orders/${orderId}`)
+    const response = await this.client._makeRequest('DELETE', `/v1/profile/orders/${orderId}`)
     const data = await response.json()
     return data.payload
   }
@@ -48,7 +48,7 @@ export class Orders {
     orderId: string,
     payload: { platinum: number; quantity: number; visible: boolean },
   ): Promise<OrderDetails> {
-    const response = await this.client._makeRequest('PUT', `/profile/orders/${orderId}`, {
+    const response = await this.client._makeRequest('PUT', `/v1/profile/orders/${orderId}`, {
       body: JSON.stringify(payload),
     })
     const data = await response.json()
@@ -57,7 +57,7 @@ export class Orders {
 
   /** Get all orders for a specific item. */
   async getByItem(itemName: string): Promise<OrderWithUser[]> {
-    const response = await this.client._makeRequest('GET', `/items/${itemName}/orders`)
+    const response = await this.client._makeRequest('GET', `/v1/items/${itemName}/orders`)
     const data = await response.json()
     let orders: OrderWithUser[] = data.payload.orders
 

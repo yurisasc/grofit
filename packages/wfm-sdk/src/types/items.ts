@@ -1,23 +1,63 @@
-/** Basic item information returned by the API. */
-export interface ItemBasic {
-  id: string
+export interface ItemI18NV2 {
+  name: string
+  description?: string
+  wikiLink?: string
+  icon: string
   thumb: string
-  item_name: string
-  url_name: string
+  subIcon?: string
 }
 
-/** Payload containing items data. */
-export interface ItemPayload {
-  items: ItemBasic[]
+export interface ItemBasicV2 {
+  id: string
+  slug: string
+  gameRef?: string
+  tags?: string[]
+  i18n: {
+    [lang: string]: ItemI18NV2
+  }
 }
 
-/** Response structure for items endpoint. */
-export interface ItemResponse {
-  payload: ItemPayload
+export interface ItemDetailV2 {
+  id: string
+  slug: string
+  gameRef?: string
+  tags?: string[]
+  setRoot?: boolean
+  setParts?: string[]
+  quantityInSet?: number
+  rarity?: string
+  bulkTradable?: boolean
+  subtypes?: string[]
+  maxRank?: number
+  maxCharges?: number
+  maxAmberStars?: number
+  maxCyanStars?: number
+  baseEndo?: number
+  endoMultiplier?: number
+  ducats?: number
+  vosfor?: number
+  reqMasteryRank?: number
+  vaulted?: boolean
+  tradingTax?: number
+  tradable?: boolean
+  i18n: {
+    [lang: string]: ItemI18NV2
+  }
 }
 
-/** Each entry in items_in_set. */
-export interface ItemInSet {
+/** Response structure for the GET /v2/items endpoint. */
+export interface ItemsV2Response {
+  apiVersion: string
+  data: ItemBasicV2[]
+}
+
+/** Response structure for the GET /v2/item/{slug} endpoint. */
+export interface ItemV2Response {
+  apiVersion: string
+  data: ItemDetailV2
+}
+
+export interface ItemInSetV1 {
   mod_max_rank: number
   vaulted?: boolean
   id: string
@@ -42,20 +82,4 @@ export interface ItemInSet {
   cs: Record<string, any>
   uk: Record<string, any>
   it: Record<string, any>
-}
-
-/** Detailed item information. */
-export interface ItemDetail {
-  id: string
-  items_in_set: ItemInSet[]
-}
-
-/** Payload containing a single item's data. */
-export interface ItemDetailPayload {
-  item: ItemDetail
-}
-
-/** Response structure for item detail endpoint. */
-export interface ItemDetailResponse {
-  payload: ItemDetailPayload
 }

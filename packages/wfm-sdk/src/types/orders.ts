@@ -1,5 +1,5 @@
 import { OrderSide } from '@grofit/contracts'
-import type { ItemInSet } from './items'
+import type { ItemInSetV1 } from './items'
 import type { UserInfo } from './common'
 
 export type OrderType = OrderSide
@@ -16,7 +16,7 @@ export interface OrderDetails {
   creation_date: string
   last_update: string
   subtype: string
-  item: ItemInSet
+  item: ItemInSetV1
 }
 
 /** Order with user information. */

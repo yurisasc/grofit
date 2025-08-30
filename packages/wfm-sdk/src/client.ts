@@ -4,7 +4,7 @@ import { Items } from './modules/items'
 import { Orders } from './modules/orders'
 import { Auth } from './modules/auth'
 
-export const BASE_URL = 'https://api.warframe.market/v1'
+export const BASE_URL = 'https://api.warframe.market'
 
 /**
  * A client for interacting with the Warframe Market API.

@@ -9,7 +9,7 @@ export class Auth {
   constructor(private readonly client: WarframeMarketAPI) {}
 
   async login(email: string, password: string): Promise<LoginResponse> {
-    const response = await this.client._makeRequest('POST', '/auth/signin', {
+    const response = await this.client._makeRequest('POST', '/v1/auth/signin', {
       body: JSON.stringify({ email, password }),
     })
 
