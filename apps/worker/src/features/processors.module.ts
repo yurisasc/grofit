@@ -6,11 +6,14 @@ import { MarketDataProcessor } from './market-data/market-data.processor'
 import { MarketDataEvents } from './market-data/market-data.events'
 import { RefreshLiveOrdersHandler } from './market-data/handlers/refresh-live-orders.handler'
 import { IngestPriceHistoryHandler } from './market-data/handlers/ingest-price-history.handler'
+import { SyncWfmItemsHandler } from './market-data/handlers/sync-wfm-items.handler'
 import { WfmApiModule } from '../services/wfm/wfm.module'
+import { EventBusModule } from '@grofit/event-bus'
 
 @Module({
   imports: [
     WfmApiModule,
+    EventBusModule,
     BullModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => {
@@ -35,6 +38,7 @@ import { WfmApiModule } from '../services/wfm/wfm.module'
     MarketDataEvents,
     RefreshLiveOrdersHandler,
     IngestPriceHistoryHandler,
+    SyncWfmItemsHandler,
   ],
 })
 export class ProcessorsModule {}

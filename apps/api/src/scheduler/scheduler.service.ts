@@ -5,6 +5,7 @@ import {
   MARKET_DATA_QUEUE,
   REFRESH_LIVE_ORDERS_JOB,
   INGEST_PRICE_HISTORY_JOB,
+  SYNC_WFM_ITEMS_JOB,
 } from '@grofit/contracts'
 
 @Injectable()
@@ -15,6 +16,7 @@ export class SchedulerService implements OnModuleInit {
     logger.info('[Scheduler] Initializing repeatable jobs...')
     await this.schedulePriceHistoryIngestion()
     await this.scheduleLiveOrderRefresh()
+    await this.scheduleWfmItemsSync()
   }
 
   /**
@@ -67,5 +69,23 @@ export class SchedulerService implements OnModuleInit {
       { job: REFRESH_LIVE_ORDERS_JOB, every: `${everyMs / 60 / 1000}m`, platform },
       '[Scheduler] Scheduled job.',
     )
+  }
+
+  /**
+   * Schedules a job to sync WFM items.
+   *
+   * This job will fetch all items from WFM and sync them to the database.
+   */
+  private async scheduleWfmItemsSync() {
+    const cron = process.env.WFM_ITEMS_SYNC_CRON || '0 */12 * * *' // every 12 hours
+    await this.marketDataQueue.add(
+      SYNC_WFM_ITEMS_JOB,
+      {},
+      {
+        repeat: { pattern: cron, tz: 'UTC' },
+        jobId: `${SYNC_WFM_ITEMS_JOB}:periodic`,
+      },
+    )
+    logger.info({ job: SYNC_WFM_ITEMS_JOB, cron }, '[Scheduler] Scheduled job.')
   }
 }
