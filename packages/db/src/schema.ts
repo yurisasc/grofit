@@ -9,6 +9,8 @@ import {
   decimal,
   jsonb,
   boolean,
+  text,
+  uniqueIndex,
 } from 'drizzle-orm/pg-core'
 
 export const relicTier = pgEnum('relic_tier', ['lith', 'meso', 'neo', 'axi', 'requiem'])
@@ -16,12 +18,37 @@ export const relicTier = pgEnum('relic_tier', ['lith', 'meso', 'neo', 'axi', 're
 export const orderSide = pgEnum('order_side', Object.values(OrderSide) as [string, ...string[]])
 export const orderStatus = pgEnum('order_status', ['open', 'filled', 'cancelled'])
 
-export const items = pgTable('items', {
-  id: serial('id').primaryKey(),
-  slug: varchar('slug', { length: 128 }).notNull().unique(),
-  kind: varchar('kind', { length: 64 }).notNull(),
-  variant: varchar('variant', { length: 64 }),
-})
+export const items = pgTable(
+  'items',
+  {
+    id: serial('id').primaryKey(),
+    wfmId: varchar('wfm_id', { length: 64 }).notNull().unique(),
+    name: varchar('name', { length: 128 }).notNull(),
+    slug: varchar('slug', { length: 128 }).notNull().unique(),
+    thumb: varchar('thumb', { length: 128 }).notNull(),
+    gameRef: varchar('game_ref', { length: 128 }),
+    rarity: varchar('rarity', { length: 32 }),
+    bulkTradable: boolean('bulk_tradable'),
+    vaulted: boolean('vaulted'),
+    tradable: boolean('tradable'),
+    tradingTax: integer('trading_tax'),
+    reqMasteryRank: integer('req_mastery_rank'),
+    maxRank: integer('max_rank'),
+    maxCharges: integer('max_charges'),
+    maxAmberStars: integer('max_amber_stars'),
+    maxCyanStars: integer('max_cyan_stars'),
+    baseEndo: integer('base_endo'),
+    endoMultiplier: integer('endo_multiplier'),
+    ducats: integer('ducats'),
+    vosfor: integer('vosfor'),
+    tags: jsonb('tags'), // string[]
+    subtypes: jsonb('subtypes'), // string[]
+    setRoot: boolean('set_root'),
+    setParts: jsonb('set_parts'), // string[]
+    quantityInSet: integer('quantity_in_set'),
+  },
+  (table) => [uniqueIndex('slug_idx').on(table.slug)],
+)
 
 export const snapshotKind = pgEnum('snapshot_kind', ['live', '48h', '90d'])
 
@@ -106,4 +133,28 @@ export const liveOrderSnapshots = pgTable('live_order_snapshots', {
   buyCount: integer('buy_count').notNull(),
   sellCount: integer('sell_count').notNull(),
   spreadPct: decimal('spread_pct', { precision: 6, scale: 2 }).notNull(),
+})
+
+export const itemI18n = pgTable('item_i18n', {
+  id: serial('id').primaryKey(),
+  itemId: integer('item_id')
+    .notNull()
+    .references(() => items.id),
+  lang: varchar('lang', { length: 16 }).notNull(),
+  name: varchar('name', { length: 128 }).notNull(),
+  description: text('description'),
+  wikiLink: varchar('wiki_link', { length: 256 }),
+  icon: varchar('icon', { length: 128 }),
+  thumb: varchar('thumb', { length: 128 }),
+  subIcon: varchar('sub_icon', { length: 128 }),
+})
+
+export const ingestionRuns = pgTable('ingestion_runs', {
+  id: serial('id').primaryKey(),
+  source: varchar('source', { length: 64 }).notNull(),
+  identifier: varchar('identifier', { length: 128 }).notNull(), // e.g., date for daily, job ID for specific
+  status: varchar('status', { length: 32 }).notNull(), // e.g., 'running', 'completed', 'failed'
+  startedAt: timestamp('started_at').defaultNow().notNull(),
+  completedAt: timestamp('completed_at'),
+  metadata: jsonb('metadata'),
 })
