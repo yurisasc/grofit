@@ -1,19 +1,5 @@
 {
-  "extends": "../../tsconfig.base.json",
-  "compilerOptions": {
-    "jsx": "preserve",
-    "allowJs": true,
-    "noEmit": true,
-    "incremental": true,
-    "moduleResolution": "Bundler",
-    "isolatedModules": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
-    "module": "esnext"
-  },
+  "extends": "../../tsconfig.next.json",
   "include": ["./", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]
 }

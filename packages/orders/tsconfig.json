@@ -1,8 +1,21 @@
 {
-  "extends": "../../tsconfig.base.json",
+  "extends": "../../tsconfig.lib.json",
   "compilerOptions": {
     "outDir": "dist",
-    "declaration": true
+    "declaration": true,
+    "module": "CommonJS",
+    "composite": true
   },
-  "include": ["src"]
+  "include": ["src"],
+  "references": [
+    {
+      "path": "../contracts"
+    },
+    {
+      "path": "../core"
+    },
+    {
+      "path": "../db"
+    }
+  ]
 }

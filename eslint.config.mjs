@@ -45,6 +45,22 @@ export default [
     },
   },
 
+  // Node JS scripts (e.g., scripts/*.mjs)
+  {
+    files: ['**/*.{js,mjs,cjs}'],
+    languageOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'module',
+      globals: {
+        ...globals.node,
+      },
+    },
+    rules: {
+      // Allow Node globals without no-undef noise in plain JS scripts
+      'no-undef': 'off',
+    },
+  },
+
   // File-specific overrides
   {
     files: ['**/next-env.d.ts'],

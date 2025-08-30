@@ -1,9 +1,10 @@
 {
-  "extends": "../../tsconfig.lib.json",
   "compilerOptions": {
     "outDir": "dist",
     "module": "CommonJS",
-    "rootDir": "src"
+    "types": ["node"],
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true
   },
   "include": ["src"]
 }

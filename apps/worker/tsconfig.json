@@ -1,11 +1,7 @@
 {
-  "extends": "../../tsconfig.base.json",
+  "extends": "../../tsconfig.nest.json",
   "compilerOptions": {
-    "module": "CommonJS",
-    "outDir": "dist",
-    "types": ["node"],
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "outDir": "dist"
   },
   "include": ["src"]
 }

@@ -14,7 +14,7 @@
   ],
   "scripts": {
     "build": "turbo build",
-    "clean": "rm -rf .turbo && pnpm -r exec rm -rf dist",
+    "clean": "rm -rf .turbo && pnpm -r exec rm -rf dist && find . -name \"*.tsbuildinfo\" -delete",
     "dev": "turbo run dev --concurrency=20",
     "lint": "turbo run lint && eslint \"packages/**/*.{ts,tsx,js,jsx}\" \"apps/api/**/*.{ts,tsx,js,jsx}\" \"apps/worker/**/*.{ts,tsx,js,jsx}\" \"apps/web/**/*.{ts,tsx,js,jsx}\" --max-warnings=0",
     "lint:fix": "eslint \"packages/**/*.{ts,tsx,js,jsx}\" \"apps/api/**/*.{ts,tsx,js,jsx}\" \"apps/worker/**/*.{ts,tsx,js,jsx}\" \"apps/web/**/*.{ts,tsx,js,jsx}\" --fix",
@@ -24,7 +24,9 @@
     "typecheck": "turbo run typecheck",
     "commitlint": "commitlint",
     "prepare": "husky",
-    "plugins:codegen": "node scripts/generate-plugin-registry.mjs"
+    "plugins:codegen": "node scripts/generate-plugin-registry.mjs",
+    "scaffold": "node scripts/scaffold.mjs",
+    "templates:sync": "node scripts/sync-templates.mjs"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",

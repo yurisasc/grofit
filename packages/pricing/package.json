@@ -10,12 +10,16 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc -p tsconfig.json",
-    "dev": "tsc -w -p tsconfig.json",
-    "typecheck": "tsc -p tsconfig.json"
+    "build": "tsc -b",
+    "dev": "tsc -b -w",
+    "typecheck": "tsc -b --clean && tsc -b",
+    "start": "node dist/main.js"
   },
   "dependencies": {
-    "@grofit/core": "workspace:*"
+    "@grofit/core": "workspace:*",
+    "@grofit/event-bus": "workspace:*",
+    "dotenv": "^17.2.1",
+    "ioredis": "^5.7.0"
   },
   "devDependencies": {
     "typescript": "^5.9.2"
