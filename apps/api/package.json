@@ -10,10 +10,12 @@
   "scripts": {
     "dev": "nest start --watch",
     "build": "nest build",
-    "start": "node dist/main.js",
-    "typecheck": "tsc -p tsconfig.json"
+    "start": "node dist/main.js"
   },
   "dependencies": {
+    "@grofit/event-bus": "workspace:*",
+    "@grofit/logger": "workspace:*",
+    "@grofit/contracts": "workspace:*",
     "@nestjs/common": "^11.1.6",
     "@nestjs/core": "^11.1.6",
     "dotenv": "^17.2.1",
@@ -21,13 +23,13 @@
     "fastify": "^5.5.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2",
-    "@grofit/logger": "workspace:*",
-    "@grofit/contracts": "workspace:*",
     "bullmq": "^5.58.2",
     "ioredis": "^5.7.0"
   },
   "devDependencies": {
     "typescript": "^5.9.2",
-    "@types/node": "^20.12.12"
+    "@types/node": "^20.12.12",
+    "tsx": "^4.19.0",
+    "tsconfig-paths": "^4.2.0"
   }
 }

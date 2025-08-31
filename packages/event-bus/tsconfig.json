@@ -1,9 +1,9 @@
 {
-  "extends": "../../tsconfig.nest.json",
+  "extends": "../../tsconfig.lib.json",
   "compilerOptions": {
     "outDir": "dist",
     "rootDir": "src",
-    "composite": true
+    "experimentalDecorators": true
   },
   "include": ["src"],
   "references": [

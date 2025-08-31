@@ -2,6 +2,12 @@
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "declaration": true,
-    "composite": true
+    "composite": true,
+    "module": "CommonJS",
+    "sourceMap": true,
+    "declarationMap": true,
+    "inlineSources": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
   }
 }

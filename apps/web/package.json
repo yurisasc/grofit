@@ -12,9 +12,10 @@
     "build": "next build",
     "start": "next start -p 3000",
     "lint": "next lint",
-    "typecheck": "tsc -p tsconfig.json"
+    "typecheck": "tsc -b tsconfig.json"
   },
   "dependencies": {
+    "@grofit/ui": "workspace:*",
     "@tailwindcss/postcss": "^4.1.12",
     "next": "^15.5.2",
     "react": "^19.1.1",

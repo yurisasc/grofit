@@ -2,9 +2,7 @@
   "extends": "../../tsconfig.lib.json",
   "compilerOptions": {
     "outDir": "dist",
-    "module": "CommonJS",
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "rootDir": "src"
   },
   "include": ["src"],
   "references": [{ "path": "../core" }, { "path": "../event-bus" }]

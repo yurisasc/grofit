@@ -55,10 +55,15 @@ async function listWorkspaces() {
   return withPkg
 }
 
-function detectType(pkg) {
+function detectType(pkg, dir) {
+  const isApp = path.relative(root, dir).startsWith('apps')
   const deps = { ...pkg.dependencies, ...pkg.devDependencies }
-  if (deps?.next) return 'next'
-  if (deps?.['@nestjs/core']) return 'nest'
+
+  if (isApp) {
+    if (deps?.next) return 'next'
+    if (deps?.['@nestjs/core']) return 'nest'
+  }
+
   return 'lib'
 }
 
@@ -70,7 +75,7 @@ async function syncDir(dir, engines, packageManager) {
   const pkgPath = path.join(dir, 'package.json')
   if (!(await exists(pkgPath))) return null
   const pkg = await readJSON(pkgPath)
-  const type = detectType(pkg)
+  const type = detectType(pkg, dir)
 
   // package.json adjustments
   let changed = false
@@ -99,7 +104,9 @@ async function syncDir(dir, engines, packageManager) {
       changed = true
     }
     changed = true
-  } else if (type === 'nest' || type === 'next') {
+  } else if (type === 'next') {
+    // For Next.js apps, ensure a typecheck script exists.
+    // NestJS apps intentionally omit this to support `nest start --watch` which has its own type-checking.
     pkg.scripts = { ...(pkg.scripts || {}), typecheck: 'tsc -p tsconfig.json' }
     changed = true
   }
