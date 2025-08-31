@@ -7,7 +7,7 @@
   "scripts": {
     "build": "tsc -b",
     "dev": "tsc -b -w",
-    "typecheck": "tsc -b tsconfig.json"
+    "typecheck": "tsc -b --clean && tsc -b"
   },
   "dependencies": {
     "ioredis": "^5.7.0",

@@ -107,7 +107,7 @@ async function syncDir(dir, engines, packageManager) {
   } else if (type === 'next') {
     // For Next.js apps, ensure a typecheck script exists.
     // NestJS apps intentionally omit this to support `nest start --watch` which has its own type-checking.
-    pkg.scripts = { ...(pkg.scripts || {}), typecheck: 'tsc -p tsconfig.json' }
+    pkg.scripts = { ...(pkg.scripts || {}), typecheck: 'tsc -b tsconfig.json' }
     changed = true
   }
   if (changed) await writeJSON(pkgPath, pkg)
