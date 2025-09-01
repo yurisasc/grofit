@@ -1,4 +1,4 @@
-import { Inject, Injectable, OnModuleInit } from '@nestjs/common'
+import { Injectable, OnModuleInit } from '@nestjs/common'
 import { Queue } from 'bullmq'
 import logger from '@grofit/logger'
 import {
@@ -7,10 +7,11 @@ import {
   INGEST_PRICE_HISTORY_JOB,
   SYNC_WFM_ITEMS_JOB,
 } from '@grofit/contracts'
+import { InjectQueue } from '@nestjs/bullmq'
 
 @Injectable()
 export class SchedulerService implements OnModuleInit {
-  constructor(@Inject(MARKET_DATA_QUEUE) private readonly marketDataQueue: Queue) {}
+  constructor(@InjectQueue(MARKET_DATA_QUEUE) private readonly marketDataQueue: Queue) {}
 
   async onModuleInit() {
     logger.info('[Scheduler] Initializing repeatable jobs...')
@@ -30,12 +31,12 @@ export class SchedulerService implements OnModuleInit {
    * accurate pricing signals.
    */
   private async schedulePriceHistoryIngestion() {
-    await this.marketDataQueue.add(
-      INGEST_PRICE_HISTORY_JOB,
-      {},
+    await this.marketDataQueue.upsertJobScheduler(
+      `${INGEST_PRICE_HISTORY_JOB}:daily`,
+      { pattern: '0 5 * * *', tz: 'UTC' },
       {
-        repeat: { pattern: '0 5 * * *', tz: 'UTC' },
-        jobId: `${INGEST_PRICE_HISTORY_JOB}:daily`,
+        name: INGEST_PRICE_HISTORY_JOB,
+        data: {},
       },
     )
     logger.info({ job: INGEST_PRICE_HISTORY_JOB, cron: '0 5 * * *' }, '[Scheduler] Scheduled job.')
@@ -78,12 +79,12 @@ export class SchedulerService implements OnModuleInit {
    */
   private async scheduleWfmItemsSync() {
     const cron = process.env.WFM_ITEMS_SYNC_CRON || '0 */12 * * *' // every 12 hours
-    await this.marketDataQueue.add(
+    await this.marketDataQueue.upsertJobScheduler(
       SYNC_WFM_ITEMS_JOB,
-      {},
+      { pattern: cron },
       {
-        repeat: { pattern: cron, tz: 'UTC' },
-        jobId: `${SYNC_WFM_ITEMS_JOB}:periodic`,
+        name: SYNC_WFM_ITEMS_JOB,
+        data: {},
       },
     )
     logger.info({ job: SYNC_WFM_ITEMS_JOB, cron }, '[Scheduler] Scheduled job.')
