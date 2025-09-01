@@ -13,6 +13,7 @@
     "start": "node dist/main.js"
   },
   "dependencies": {
+    "@duckdb/node-api": "^1.3.2-alpha.26",
     "@grofit/contracts": "workspace:*",
     "@grofit/db": "workspace:*",
     "@grofit/event-bus": "workspace:*",
@@ -25,10 +26,10 @@
     "bullmq": "^5.58.2",
     "dotenv": "^17.2.1",
     "drizzle-orm": "^0.44.5",
-    "@duckdb/node-api": "^1.3.2-alpha.26",
     "ioredis": "^5.7.0",
     "reflect-metadata": "^0.2.2",
-    "rxjs": "^7.8.2"
+    "rxjs": "^7.8.2",
+    "zod": "^4.1.5"
   },
   "devDependencies": {
     "@grofit/core": "workspace:*",

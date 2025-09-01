@@ -9,10 +9,14 @@ import { IngestPriceHistoryHandler } from './market-data/handlers/ingest-price-h
 import { SyncWfmItemsHandler } from './market-data/handlers/sync-wfm-items.handler'
 import { WfmApiModule } from '../services/wfm/wfm.module'
 import { EventBusModule } from '@grofit/event-bus'
+import { RelicsRunApiModule } from '../services/relics-run/relics-run.module'
+import { DbModule } from '../services/db/db.module'
 
 @Module({
   imports: [
     WfmApiModule,
+    DbModule,
+    RelicsRunApiModule,
     EventBusModule,
     BullModule.forRootAsync({
       imports: [ConfigModule],

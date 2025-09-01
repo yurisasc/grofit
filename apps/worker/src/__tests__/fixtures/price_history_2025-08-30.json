@@ -1,0 +1,32 @@
+{
+  "Akbronco Prime Blueprint": [
+    {
+      "id": "68b3939913a27d001460f38c",
+      "median": 5,
+      "volume": 183,
+      "item_id": "5675523555f0494a5c7f1919",
+      "datetime": "2025-08-30T00:00:00.000+00:00",
+      "wa_price": 4.896,
+      "avg_price": 5,
+      "max_price": 6,
+      "min_price": 4,
+      "moving_avg": 5.1,
+      "order_type": "sell"
+    }
+  ],
+  "Aklex Prime Link": [
+    {
+      "id": "68b3939913a27d001460f38d",
+      "median": 10,
+      "volume": 50,
+      "item_id": "5675523555f0494a5c7f191a",
+      "datetime": "2025-08-30T00:00:00.000+00:00",
+      "wa_price": 10.5,
+      "avg_price": 10,
+      "max_price": 12,
+      "min_price": 9,
+      "moving_avg": 10.2,
+      "order_type": "buy"
+    }
+  ]
+}

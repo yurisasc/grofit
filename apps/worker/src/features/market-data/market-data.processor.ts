@@ -28,7 +28,7 @@ export class MarketDataProcessor extends WorkerHost {
       case REFRESH_LIVE_ORDERS_JOB:
         return this.refreshLiveOrdersHandler.handle(job.data?.platform)
       case INGEST_PRICE_HISTORY_JOB:
-        return this.ingestPriceHistoryHandler.handle()
+        return this.ingestPriceHistoryHandler.handle(job)
       case SYNC_WFM_ITEMS_JOB:
         return this.syncWfmItemsHandler.handle()
       default:
