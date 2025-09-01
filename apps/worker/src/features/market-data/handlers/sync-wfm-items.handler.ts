@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common'
-import { WarframeMarketAPI } from '@grofit/wfm-sdk'
+import { WarframeMarketAPI, ItemI18NV2 } from '@grofit/wfm-sdk'
 import { WfmApiService } from '../../../services/wfm/wfm.service'
 import logger from '@grofit/logger'
-import { db, schema } from '@grofit/db'
-import { eq } from 'drizzle-orm'
 import { EventBusService } from '@grofit/event-bus'
+import { ItemsService } from '../../../services/db/items'
 import { ITEMS_UPSERTED_EVENT } from '@grofit/contracts'
 
 @Injectable()
@@ -14,6 +13,7 @@ export class SyncWfmItemsHandler {
   constructor(
     private readonly wfmService: WfmApiService,
     private readonly eventBus: EventBusService,
+    private readonly itemsService: ItemsService,
   ) {
     this.wfm = this.wfmService.getInstance()
   }
@@ -26,8 +26,7 @@ export class SyncWfmItemsHandler {
     const allWfmItems = await this.wfm.items.getAll()
     log.info(`Fetched ${allWfmItems.length} items from WFM.`)
 
-    const existingSlugs = await db.select({ slug: schema.items.slug }).from(schema.items)
-    const existingSlugSet = new Set(existingSlugs.map((i) => i.slug))
+    const existingSlugSet = await this.itemsService.getAllItemSlugs()
     log.info(`Found ${existingSlugSet.size} existing items in DB.`)
 
     const newItems = allWfmItems.filter((item) => !existingSlugSet.has(item.slug))
@@ -49,35 +48,19 @@ export class SyncWfmItemsHandler {
           tradingTax: itemData.tradingTax,
         }
 
-        await db.transaction(async (tx) => {
-          const [upsertedItem] = await tx
-            .insert(schema.items)
-            .values(itemPayload)
-            .onConflictDoUpdate({ target: schema.items.slug, set: itemPayload })
-            .returning()
+        const i18nPayloads = Object.entries(i18n).map(([lang, i]: [string, ItemI18NV2]) => ({
+          lang: lang,
+          name: i.name,
+          description: i.description,
+          wikiLink: i.wikiLink,
+          thumb: i.thumb,
+          subIcon: i.subIcon,
+          icon: i.icon,
+        }))
 
-          log.info({ itemId: upsertedItem.id }, 'Upserted item.')
+        const upsertedItem = await this.itemsService.upsertItemWithI18n(itemPayload, i18nPayloads)
 
-          await tx.delete(schema.itemI18n).where(eq(schema.itemI18n.itemId, upsertedItem.id))
-
-          const i18nPayloads = Object.entries(i18n).map(([lang, i]) => ({
-            itemId: upsertedItem.id,
-            lang: lang,
-            name: i.name,
-            description: i.description,
-            wikiLink: i.wikiLink,
-            thumb: i.thumb,
-            subIcon: i.subIcon,
-            icon: i.icon,
-          }))
-
-          if (i18nPayloads.length > 0) {
-            await tx.insert(schema.itemI18n).values(i18nPayloads)
-            log.info(`Inserted ${i18nPayloads.length} i18n entries.`)
-          }
-
-          await this.eventBus.publish(ITEMS_UPSERTED_EVENT, { item: upsertedItem })
-        })
+        await this.eventBus.publish(ITEMS_UPSERTED_EVENT, { item: upsertedItem })
       } catch (error) {
         log.error({ err: error, slug: newItem.slug }, 'Failed to sync item detail.')
       }
