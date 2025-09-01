@@ -23,7 +23,7 @@ export const items = pgTable(
   {
     id: serial('id').primaryKey(),
     wfmId: varchar('wfm_id', { length: 64 }).notNull().unique(),
-    name: varchar('name', { length: 128 }).notNull(),
+    name: varchar('name', { length: 128 }).notNull().unique(),
     slug: varchar('slug', { length: 128 }).notNull().unique(),
     thumb: varchar('thumb', { length: 128 }).notNull(),
     gameRef: varchar('game_ref', { length: 128 }),
@@ -47,24 +47,8 @@ export const items = pgTable(
     setParts: jsonb('set_parts'), // string[]
     quantityInSet: integer('quantity_in_set'),
   },
-  (table) => [uniqueIndex('slug_idx').on(table.slug)],
+  (table) => [uniqueIndex('slug_idx').on(table.slug), uniqueIndex('name_idx').on(table.name)],
 )
-
-export const snapshotKind = pgEnum('snapshot_kind', ['live', '48h', '90d'])
-
-export const marketSnapshots = pgTable('market_snapshots', {
-  id: serial('id').primaryKey(),
-  itemId: integer('item_id')
-    .notNull()
-    .references(() => items.id),
-  kind: snapshotKind('kind').notNull(),
-  volume: integer('volume').notNull(),
-  minPrice: integer('min_price').notNull(),
-  maxPrice: integer('max_price').notNull(),
-  avgPrice: decimal('avg_price', { precision: 10, scale: 2 }).notNull(),
-  medianPrice: integer('median_price').notNull(),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-})
 
 export const orders = pgTable('orders', {
   id: serial('id').primaryKey(),
@@ -76,8 +60,6 @@ export const orders = pgTable('orders', {
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 })
-
-// Provisional tables for ingestion pivot (subject to change)
 
 export const dailyItemMetrics = pgTable('daily_item_metrics', {
   id: serial('id').primaryKey(),
@@ -108,17 +90,6 @@ export const popularItems = pgTable('popular_items', {
   score: decimal('score', { precision: 10, scale: 4 }).notNull(),
   rank: integer('rank').notNull(),
   metricsJson: jsonb('metrics_json'),
-})
-
-export const relics = pgTable('relics', {
-  id: serial('id').primaryKey(),
-  itemId: integer('item_id')
-    .notNull()
-    .references(() => items.id),
-  tier: relicTier('tier').notNull(),
-  name: varchar('name', { length: 16 }).notNull(), // e.g., A1, B2, C3
-  isVaulted: boolean('is_vaulted').notNull().default(false),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
 })
 
 export const liveOrderSnapshots = pgTable('live_order_snapshots', {
