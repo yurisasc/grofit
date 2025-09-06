@@ -71,15 +71,18 @@ export const popularItems = pgTable(
   {
     id: serial('id').primaryKey(),
     date: date('date').notNull(),
-    itemId: integer('item_id')
-      .notNull()
-      .references(() => items.id),
+    itemName: varchar('item_name', { length: 128 }).notNull(),
+    modRank: integer('mod_rank').notNull().default(-1),
     score: decimal('score', { precision: 10, scale: 4 }).notNull(),
     rank: integer('rank').notNull(),
     metricsJson: jsonb('metrics_json'),
   },
   (table) => [
-    uniqueIndex('popular_items_date_item_idx').on(table.date, table.itemId),
+    uniqueIndex('popular_items_date_item_mod_rank_idx').on(
+      table.date,
+      table.itemName,
+      table.modRank,
+    ),
     index('popular_items_rank_idx').on(table.rank),
   ],
 )
@@ -111,7 +114,6 @@ export const priceHistoryEntries = pgTable(
     itemName: varchar('item_name', { length: 128 }).notNull(),
     orderType: priceOrderType('order_type').notNull(),
     modRank: integer('mod_rank').notNull().default(-1),
-
     volume: integer('volume'),
     minPrice: integer('min_price'),
     maxPrice: integer('max_price'),
