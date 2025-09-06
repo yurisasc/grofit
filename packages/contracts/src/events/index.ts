@@ -3,8 +3,8 @@ export const ITEMS_UPSERTED_EVENT = 'events:items:upserted'
 // Emitted by worker after daily relics.run history ingestion completes successfully
 export const INGEST_PRICE_HISTORY_COMPLETED = 'events:ingestion:price-history:daily:completed'
 
-// Emitted by analytics after popular_items materialization is updated
-export const ANALYTICS_POPULAR_UPDATED = 'analytics:popular-updated'
+// Emitted by unified analytics after all analytics are computed and stored
+export const ANALYTICS_COMPLETE_UPDATED = 'analytics:complete:updated'
 
 // Event message types
 export interface PriceHistoryIngestionMessage {
@@ -23,22 +23,47 @@ export interface PriceHistoryIngestionCompletedMessage {
   sha256: string
 }
 
-export interface AnalyticsPopularUpdatedMessage {
+export interface AnalyticsCompleteUpdatedMessage {
   date: string
   count: number
-  topItems: Array<{
-    itemId: number
+  topRecommendations: Array<{
+    itemName: string
     modRank: number
     rank: number
     score: number
-    metrics: object
+    recommendation: 'BUY' | 'HOLD' | 'AVOID'
+    confidence: number
+    factors: object
   }>
+  marketTrends: Array<{
+    itemName: string
+    window: '7d' | '14d' | '30d'
+    trendDirection: 'bullish' | 'bearish' | 'sideways'
+    trendStrength: number
+    priceChange: number
+    volumeChange: number
+  }>
+  itemPerformances: Array<{
+    itemName: string
+    priceChangePercent: number | null
+    volumeChangePercent: number
+    stabilityScore: number
+    performanceRank: number
+    liquidityScore: number
+    volatilityScore: number
+  }>
+  summary: {
+    buyCount: number
+    holdCount: number
+    avoidCount: number
+    averageScore: number
+  }
 }
 
 // Event type mapping for type-safe event bus
 export interface EventTypes {
   [INGEST_PRICE_HISTORY_COMPLETED]: PriceHistoryIngestionMessage
-  [ANALYTICS_POPULAR_UPDATED]: AnalyticsPopularUpdatedMessage
+  [ANALYTICS_COMPLETE_UPDATED]: AnalyticsCompleteUpdatedMessage
 }
 
 // Utility type to extract message type for a given event
