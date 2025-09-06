@@ -8,10 +8,21 @@ import {
   PriceHistoryRawService,
 } from '../../../services/db/price-history'
 import { EventBusService } from '@grofit/event-bus'
+import { INGEST_PRICE_HISTORY_COMPLETED } from '@grofit/contracts'
 import { computeCanonicalSha256 } from '../lib/price-history-utils'
 
 const SOURCE_NAME = 'price_history.daily'
 
+/**
+ * Handler for ingesting daily price history data from Relics Run
+ *
+ * This handler is responsible for:
+ * - Fetching daily price history data from the Relics Run API
+ * - Processing and normalizing the raw data
+ * - Storing both raw snapshots and processed entries in the database
+ * - Publishing completion events for downstream processing
+ * - Managing ingestion runs and deduplication
+ */
 @Injectable()
 export class IngestPriceHistoryHandler {
   constructor(
@@ -22,6 +33,15 @@ export class IngestPriceHistoryHandler {
     private readonly eventBus: EventBusService,
   ) {}
 
+  /**
+   * Process a daily price history ingestion job
+   *
+   * Fetches price history data for the specified date, processes it,
+   * stores it in the database, and publishes a completion event.
+   * Includes deduplication logic to prevent reprocessing the same data.
+   *
+   * @param job - BullMQ job containing the ingestion parameters
+   */
   async handle(job: Job): Promise<void> {
     const date = job.data?.date || this.getYesterdayDateString()
     const log = logger.child({ job: job.name, id: job.id, date })
@@ -31,7 +51,7 @@ export class IngestPriceHistoryHandler {
 
     try {
       const rawData = await this.api.getDailyHistory(date)
-      const sha256 = computeCanonicalSha256(rawData as any)
+      const sha256 = computeCanonicalSha256(rawData)
 
       const existingRun = await this.ingestionRuns.findCompletedRunByHash(SOURCE_NAME, date, sha256)
       if (existingRun) {
@@ -68,7 +88,7 @@ export class IngestPriceHistoryHandler {
         metadata: { itemsCount, entriesCount, upserted: entries.length },
       })
 
-      await this.eventBus.publish('ingestion.price_history.daily.completed', {
+      await this.eventBus.publish(INGEST_PRICE_HISTORY_COMPLETED, {
         source: SOURCE_NAME,
         date,
         itemsCount,
@@ -85,6 +105,13 @@ export class IngestPriceHistoryHandler {
     }
   }
 
+  /**
+   * Get yesterday's date string in YYYY-MM-DD format
+   * Used as the default date when no specific date is provided in the job
+   *
+   * @returns Yesterday's date string
+   * @private
+   */
   private getYesterdayDateString(): string {
     const yesterday = new Date()
     yesterday.setDate(yesterday.getDate() - 1)

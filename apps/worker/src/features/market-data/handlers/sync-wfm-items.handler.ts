@@ -6,6 +6,19 @@ import { EventBusService } from '@grofit/event-bus'
 import { ItemsService } from '../../../services/db/items'
 import { ITEMS_UPSERTED_EVENT } from '@grofit/contracts'
 
+/**
+ * Handler for synchronizing Warframe Market (WFM) item data
+ *
+ * This handler is responsible for:
+ * - Fetching all available items from the Warframe Market API
+ * - Identifying new items that don't exist in the local database
+ * - Fetching detailed information for each new item including translations
+ * - Storing item data and internationalization details in the database
+ * - Publishing events for each newly upserted item
+ *
+ * This ensures the local database stays synchronized with the latest
+ * Warframe Market item catalog and translation data.
+ */
 @Injectable()
 export class SyncWfmItemsHandler {
   private wfm: WarframeMarketAPI
@@ -18,7 +31,14 @@ export class SyncWfmItemsHandler {
     this.wfm = this.wfmService.getInstance()
   }
 
-  async handle() {
+  /**
+   * Execute the WFM items synchronization process
+   *
+   * Fetches all items from WFM, filters for new items not in the local database,
+   * retrieves detailed information for each new item, and stores them with
+   * their internationalization data. Publishes an event for each upserted item.
+   */
+  async handle(): Promise<void> {
     const log = logger.child({ handler: 'SyncWfmItemsHandler' })
     log.info('Starting WFM items sync...')
 
