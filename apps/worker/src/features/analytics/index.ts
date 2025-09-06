@@ -1,1 +1,6 @@
 export * from './analytics.module'
+export * from './analytics.subscriber'
+export * from './flip-recommendations'
+export * from './market-trends'
+export * from './item-performance'
+export * from './shared'

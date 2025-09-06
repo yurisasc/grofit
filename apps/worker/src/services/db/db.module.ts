@@ -2,7 +2,9 @@ import { Module } from '@nestjs/common'
 import { ItemsService } from './items'
 import { IngestionRunsService } from './ingestion-runs'
 import { PriceHistoryEntriesService, PriceHistoryRawService } from './price-history'
-import { PopularItemsService } from './popular-items'
+import { MarketTrendsService } from './market-trends'
+import { ItemPerformanceService } from './item-performance'
+import { FlipRecommendationsService } from './flip-recommendations'
 
 @Module({
   providers: [
@@ -10,14 +12,18 @@ import { PopularItemsService } from './popular-items'
     ItemsService,
     PriceHistoryEntriesService,
     PriceHistoryRawService,
-    PopularItemsService,
+    FlipRecommendationsService,
+    MarketTrendsService,
+    ItemPerformanceService,
   ],
   exports: [
     IngestionRunsService,
     ItemsService,
     PriceHistoryEntriesService,
     PriceHistoryRawService,
-    PopularItemsService,
+    FlipRecommendationsService,
+    MarketTrendsService,
+    ItemPerformanceService,
   ],
 })
 export class DbModule {}
