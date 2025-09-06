@@ -1,5 +1,5 @@
 {
-  "name": "@grofit/pricing",
+  "name": "@grofit/analytics",
   "private": true,
   "version": "0.1.0",
   "packageManager": "pnpm@10.15.0",
@@ -12,14 +12,7 @@
   "scripts": {
     "build": "tsc -b",
     "dev": "tsc -b -w",
-    "typecheck": "tsc -b --clean && tsc -b",
-    "start": "node dist/main.js"
-  },
-  "dependencies": {
-    "@grofit/core": "workspace:*",
-    "@grofit/event-bus": "workspace:*",
-    "dotenv": "^17.2.1",
-    "ioredis": "^5.7.0"
+    "typecheck": "tsc -b --clean && tsc -b"
   },
   "devDependencies": {
     "typescript": "^5.9.2"
