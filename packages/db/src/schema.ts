@@ -22,6 +22,7 @@ export const relicTier = pgEnum('relic_tier', ['lith', 'meso', 'neo', 'axi', 're
 export const orderSide = pgEnum('order_side', Object.values(OrderSide) as [string, ...string[]])
 export const orderStatus = pgEnum('order_status', ['open', 'filled', 'cancelled'])
 export const priceOrderType = pgEnum('price_order_type', ['buy', 'sell', 'closed'])
+export const trendDirection = pgEnum('trend_direction', ['bullish', 'bearish', 'sideways'])
 
 export const items = pgTable(
   'items',
@@ -66,8 +67,8 @@ export const orders = pgTable('orders', {
   updatedAt: timestamp('updated_at').defaultNow(),
 })
 
-export const popularItems = pgTable(
-  'popular_items',
+export const flipRecommendations = pgTable(
+  'flip_recommendations',
   {
     id: serial('id').primaryKey(),
     date: date('date').notNull(),
@@ -75,15 +76,28 @@ export const popularItems = pgTable(
     modRank: integer('mod_rank').notNull().default(-1),
     score: decimal('score', { precision: 10, scale: 4 }).notNull(),
     rank: integer('rank').notNull(),
-    metricsJson: jsonb('metrics_json'),
+    recommendation: varchar('recommendation', { length: 16 }), // 'BUY', 'HOLD', 'AVOID'
+    confidence: decimal('confidence', { precision: 5, scale: 4 }), // 0-1 scale
+    trendStrength: decimal('trend_strength', { precision: 5, scale: 4 }),
+    performanceRank: decimal('performance_rank', { precision: 8, scale: 4 }),
+    stabilityScore: decimal('stability_score', { precision: 5, scale: 4 }),
+    volumeRank: decimal('volume_rank', { precision: 5, scale: 4 }),
+    volatilityScore: decimal('volatility_score', { precision: 5, scale: 4 }),
+    seasonalMultiplier: decimal('seasonal_multiplier', { precision: 3, scale: 2 }),
+    marketHealth: decimal('market_health', { precision: 5, scale: 4 }),
+    patternConfidence: decimal('pattern_confidence', { precision: 5, scale: 4 }),
+    factorsJson: jsonb('factors_json'), // Detailed scoring factors
+    createdAt: timestamp('created_at').defaultNow().notNull(),
   },
   (table) => [
-    uniqueIndex('popular_items_date_item_mod_rank_idx').on(
+    uniqueIndex('flip_recommendations_date_item_mod_rank_idx').on(
       table.date,
       table.itemName,
       table.modRank,
     ),
-    index('popular_items_rank_idx').on(table.rank),
+    index('flip_recommendations_rank_idx').on(table.rank),
+    index('flip_recommendations_date_idx').on(table.date),
+    index('flip_recommendations_recommendation_idx').on(table.recommendation),
   ],
 )
 
@@ -189,5 +203,57 @@ export const ingestionRuns = pgTable(
   (table) => [
     uniqueIndex('ingestion_runs_source_identifier_idx').on(table.source, table.identifier),
     index('ingestion_runs_sha256_idx').on(table.sha256),
+  ],
+)
+
+export const marketTrends = pgTable(
+  'market_trends',
+  {
+    id: serial('id').primaryKey(),
+    itemName: varchar('item_name', { length: 128 }).notNull(),
+    modRank: integer('mod_rank').notNull().default(-1),
+    date: date('date').notNull(),
+    window: varchar('window', { length: 8 }).notNull(), // '7d', '14d', '30d'
+    trendDirection: trendDirection('trend_direction').notNull(),
+    trendStrength: decimal('trend_strength', { precision: 5, scale: 4 }).notNull(), // 0-1 scale
+    priceChange: decimal('price_change', { precision: 8, scale: 4 }).notNull(),
+    volumeChange: decimal('volume_change', { precision: 8, scale: 4 }).notNull(),
+    sma: decimal('sma', { precision: 10, scale: 4 }),
+    ema: decimal('ema', { precision: 10, scale: 4 }),
+    volatility: decimal('volatility', { precision: 8, scale: 4 }),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+  },
+  (table) => [
+    uniqueIndex('market_trends_item_date_window_idx').on(
+      table.itemName,
+      table.modRank,
+      table.date,
+      table.window,
+    ),
+    index('market_trends_date_idx').on(table.date),
+    index('market_trends_item_date_idx').on(table.itemName, table.date),
+    index('market_trends_trend_direction_idx').on(table.trendDirection),
+  ],
+)
+
+export const itemPerformance = pgTable(
+  'item_performance',
+  {
+    id: serial('id').primaryKey(),
+    itemName: varchar('item_name', { length: 128 }).notNull(),
+    modRank: integer('mod_rank').notNull().default(-1),
+    date: date('date').notNull(),
+    priceChangePercent: decimal('price_change_percent', { precision: 8, scale: 4 }),
+    volumeChangePercent: decimal('volume_change_percent', { precision: 8, scale: 4 }),
+    stabilityScore: decimal('stability_score', { precision: 5, scale: 4 }), // 0-1 scale
+    performanceRank: decimal('performance_rank', { precision: 8, scale: 4 }),
+    liquidityScore: decimal('liquidity_score', { precision: 8, scale: 4 }),
+    volatilityScore: decimal('volatility_score', { precision: 8, scale: 4 }),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+  },
+  (table) => [
+    uniqueIndex('item_performance_item_date_idx').on(table.itemName, table.date, table.modRank),
+    index('item_performance_date_idx').on(table.date),
+    index('item_performance_rank_idx').on(table.performanceRank),
   ],
 )
