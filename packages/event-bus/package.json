@@ -12,6 +12,7 @@
   "dependencies": {
     "ioredis": "^5.7.0",
     "@grofit/logger": "workspace:*",
+    "@grofit/contracts": "workspace:*",
     "@nestjs/common": "^11.1.6",
     "@nestjs/core": "^11.1.6",
     "reflect-metadata": "^0.2.2",
